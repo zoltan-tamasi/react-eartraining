@@ -1,9 +1,7 @@
+import { Opaque } from "./Opaque";
 
 export class Note {
-  noteName: NoteName;
-  octave: number;
-
-  constructor(noteName: NoteName, octave: number) {
+  constructor(readonly noteName: NoteNameType, readonly  octave: number) {
     this.noteName = noteName;
     this.octave = octave;
   }
@@ -14,9 +12,9 @@ export class Note {
   }
 
   successor(): Note {
-    return this.noteName.noteName.toString() === 'B' ? 
-      new Note(new NoteName('C'), this.octave + 1) : 
-      new Note(this.noteName.successor(), this.octave)
+    return this.noteName === B ?
+      new Note(C, this.octave + 1) :
+      new Note(NoteName.successor(this.noteName), this.octave)
   }
 
   toString(): string {
@@ -25,86 +23,88 @@ export class Note {
 
 }
 
+export type NoteNameType = Opaque<'NoteNameType', object>
 
-export type NoteNameType = 'A' | 'A#' | 'B' | 'C' | 'C#' | 'D' | 'D#' | 'E' | 'F' | 'F#' | 'G' | 'G#' | 'H';
+export const C = {} as NoteNameType;
+export const Csharp = {} as NoteNameType;
+export const D = {} as NoteNameType;
+export const Dsharp = {} as NoteNameType;
+export const E = {} as NoteNameType;
+export const F = {} as NoteNameType;
+export const Fsharp = {} as NoteNameType;
+export const G = {} as NoteNameType;
+export const Gsharp = {} as NoteNameType;
+export const A = {} as NoteNameType;
+export const Asharp = {} as NoteNameType;
+export const B = {} as NoteNameType;
 
-export class NoteName {
-  noteName: NoteNameType
 
-  constructor(noteName: NoteNameType) {
-    this.noteName = noteName
-  }
+export const NoteName = {
 
-  fromInt(noteValue: number): NoteName {
-    if (noteValue === 0) return new NoteName('C');
-    if (noteValue === 1) return new NoteName('C#');
-    if (noteValue === 2) return new NoteName('D');
-    if (noteValue === 3) return new NoteName('D#');
-    if (noteValue === 4) return new NoteName('E');
-    if (noteValue === 5) return new NoteName('F');
-    if (noteValue === 6) return new NoteName('F#');
-    if (noteValue === 7) return new NoteName('G');
-    if (noteValue === 8) return new NoteName('G#');
-    if (noteValue === 9) return new NoteName('A');
-    if (noteValue === 10) return new NoteName('A#');
-    if (noteValue === 11) return new NoteName('B');
+  fromInt(noteValue: number): NoteNameType {
+    if (noteValue === 0) return C;
+    if (noteValue === 1) return Csharp;
+    if (noteValue === 2) return D;
+    if (noteValue === 3) return Dsharp;
+    if (noteValue === 4) return E;
+    if (noteValue === 5) return F;
+    if (noteValue === 6) return Fsharp;
+    if (noteValue === 7) return G;
+    if (noteValue === 8) return Gsharp;
+    if (noteValue === 9) return A;
+    if (noteValue === 10) return Asharp;
+    if (noteValue === 11) return B;
     throw new Error('Note value must be between 0 - 11');
-  }
+  },
 
-  successor(): NoteName {
-    if (this.noteName === 'C') return new NoteName('C#');
-    if (this.noteName === 'C#') return new NoteName('D');
-    if (this.noteName === 'D') return new NoteName('D#');
-    if (this.noteName === 'D#') return new NoteName('E');
-    if (this.noteName === 'E') return new NoteName('F');
-    if (this.noteName === 'F') return new NoteName('F#');
-    if (this.noteName === 'F#') return new NoteName('G');
-    if (this.noteName === 'G') return new NoteName('G#');
-    if (this.noteName === 'G#') return new NoteName('A');
-    if (this.noteName === 'A') return new NoteName('A#');
-    if (this.noteName === 'A#') return new NoteName('B');
-    return new NoteName('C');
-  }
+  successor(noteName: NoteNameType): NoteNameType {
+    if (noteName === C) return Csharp;
+    if (noteName === Csharp) return D;
+    if (noteName === D) return Dsharp;
+    if (noteName === Dsharp) return E;
+    if (noteName === E) return F;
+    if (noteName === F) return Fsharp;
+    if (noteName === Fsharp) return G;
+    if (noteName === G) return Gsharp;
+    if (noteName === Gsharp) return A;
+    if (noteName === A) return Asharp;
+    if (noteName === Asharp) return B;
+    return C;
+  },
 
-  predecessor(): NoteName {
-    if (this.noteName === 'C') return new NoteName('B');
-    if (this.noteName === 'C#') return new NoteName('C');
-    if (this.noteName === 'D') return new NoteName('C#');
-    if (this.noteName === 'D#') return new NoteName('D');
-    if (this.noteName === 'E') return new NoteName('D#');
-    if (this.noteName === 'F') return new NoteName('E');
-    if (this.noteName === 'F#') return new NoteName('F');
-    if (this.noteName === 'G') return new NoteName('F#');
-    if (this.noteName === 'G#') return new NoteName('G');
-    if (this.noteName === 'A') return new NoteName('G#');
-    if (this.noteName === 'A#') return new NoteName('A');
-    return new NoteName('A#');
+  predecessor(noteName: NoteNameType): NoteNameType {
+    if (noteName === C) return B;
+    if (noteName === Csharp) return C;
+    if (noteName === D) return Csharp;
+    if (noteName === Dsharp) return D;
+    if (noteName === E) return Dsharp;
+    if (noteName === F) return E;
+    if (noteName === Fsharp) return F;
+    if (noteName === G) return Fsharp;
+    if (noteName === G) return G;
+    if (noteName === A) return Gsharp;
+    if (noteName === Asharp) return A;
+    return Asharp;
   }
 }
 
-export class Rotation {}
 
-export const Rotation0 = new Rotation();
-export const Rotation1 = new Rotation();
-export const Rotation2 = new Rotation();
+export type Rotation = Opaque<'Rotation', number>
+export const Rotation0 = {} as Rotation;
+export const Rotation1 = {} as Rotation;
+export const Rotation2 = {} as Rotation;
 
-export class OctaveExplode {}
-
-export const OctaveExploded = new OctaveExplode();
-export const NotOctaveExploded = new OctaveExplode();
+export type OctaveExplode = Opaque<'OctaveExplode', boolean>
+export const OctaveExploded = {} as OctaveExplode
+export const NotOctaveExploded = {} as OctaveExplode;
 
 export class Chord {
-  rotation: Rotation;
-  triadCore: TriadCore;
-  baseNote: Note;
-  octaveExplode: OctaveExplode;
-
-  constructor(triadCore: TriadCore, rotation: Rotation, octaveExplode: OctaveExplode, baseNote: Note) {
-    this.rotation = rotation;
-    this.triadCore = triadCore;
-    this.baseNote = baseNote;
-    this.octaveExplode = octaveExplode;
-  }
+  constructor(
+    readonly rotation: Rotation,
+    readonly triadCore: TriadCore,
+    readonly baseNote: Note,
+    readonly octaveExplode: OctaveExplode
+  ) {}
 
   intervals(): [number, number, number] {
     return (
@@ -121,7 +121,7 @@ export class Chord {
 
     const notes: Array<Note> =
       this.intervals().slice(0, 2)
-        .reduce(([head, ...rest], interval, index) => {
+        .reduce(([head, ...rest], interval) => {
           return [head.plus(interval), head, ...rest];
         }, [this.baseNote])
         .reverse();
@@ -133,9 +133,7 @@ export class Chord {
 }
 
 export class TriadCore {
-  intervals: [number, number, number];
-
-  constructor(intervals: [number, number, number]) {
+  constructor(readonly intervals: [number, number, number]) {
     if (intervals[0] + intervals[1] + intervals[2] !== 12)
       throw new Error("TriadCore must be 3 integers summing up to 12");
     this.intervals = intervals;
@@ -161,5 +159,3 @@ export const Diminished = new TriadCore([3, 3, 6]);
 export const Minor = new TriadCore([3, 4, 5]);
 export const Major = new TriadCore([3, 5, 4]);
 export const Augmented = new TriadCore([4, 4, 4]);
-
-
