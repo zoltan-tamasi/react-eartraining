@@ -1,7 +1,7 @@
 import { Opaque } from "./Opaque";
 
 export class Note {
-  constructor(readonly noteName: NoteNameType, readonly  octave: number) {
+  constructor(readonly noteName: NoteNameType, readonly octave: number) {
     this.noteName = noteName;
     this.octave = octave;
   }
@@ -18,25 +18,25 @@ export class Note {
   }
 
   toString(): string {
-    return `${this.noteName}${this.octave}`;
+    return `${this.noteName.toString()}${this.octave}`;
   }
 
 }
 
 export type NoteNameType = Opaque<'NoteNameType', object>
 
-export const C = {} as NoteNameType;
-export const Csharp = {} as NoteNameType;
-export const D = {} as NoteNameType;
-export const Dsharp = {} as NoteNameType;
-export const E = {} as NoteNameType;
-export const F = {} as NoteNameType;
-export const Fsharp = {} as NoteNameType;
-export const G = {} as NoteNameType;
-export const Gsharp = {} as NoteNameType;
-export const A = {} as NoteNameType;
-export const Asharp = {} as NoteNameType;
-export const B = {} as NoteNameType;
+export const C = { toString() { return 'C' } } as NoteNameType;
+export const Csharp = { toString() { return 'C#' } } as NoteNameType;
+export const D = { toString() { return 'D' } } as NoteNameType;
+export const Dsharp = { toString() { return 'D#' } } as NoteNameType;
+export const E = { toString() { return 'E' } } as NoteNameType;
+export const F = { toString() { return 'F' } } as NoteNameType;
+export const Fsharp = { toString() { return 'F#' } } as NoteNameType;
+export const G = { toString() { return 'G' } } as NoteNameType;
+export const Gsharp = { toString() { return 'G#' } } as NoteNameType;
+export const A = { toString() { return 'A' } } as NoteNameType;
+export const Asharp = { toString() { return 'A#' } } as NoteNameType;
+export const B = { toString() { return 'B' } } as NoteNameType;
 
 
 export const NoteName = {
@@ -108,9 +108,9 @@ export class Chord {
 
   intervals(): [number, number, number] {
     return (
-      this.rotation === Rotation0 
+      this.rotation === Rotation0
         ? [this.triadCore.intervals[0], this.triadCore.intervals[1], this.triadCore.intervals[2]] :
-        this.rotation === Rotation1 
+        this.rotation === Rotation1
         ? [this.triadCore.intervals[1], this.triadCore.intervals[2], this.triadCore.intervals[0]] :
       //chord.rotation === Rotation2
           [this.triadCore.intervals[2], this.triadCore.intervals[0], this.triadCore.intervals[1]]
@@ -126,36 +126,60 @@ export class Chord {
         }, [this.baseNote])
         .reverse();
 
-    return (this.octaveExplode === OctaveExploded) 
+    return (this.octaveExplode === OctaveExploded)
         ? [notes[0], notes[1].plus(12), notes[2]]
         : notes
   }
 }
 
 export class TriadCore {
-  constructor(readonly intervals: [number, number, number]) {
+  constructor(readonly intervals: [number, number, number], readonly label: string) {
     if (intervals[0] + intervals[1] + intervals[2] !== 12)
       throw new Error("TriadCore must be 3 integers summing up to 12");
     this.intervals = intervals;
   }
+
+  public static fromIntervals(intervals: [number, number, number]): TriadCore {
+
+    const rotate = (intervals: [number, number, number]): [number, number, number] =>
+      [intervals[1], intervals[2], intervals[0]]
+
+    const triadType = AllTriadTypes.find(
+      core =>
+        core.intervals.every((coreInterval, index) => intervals[index] === coreInterval) ||
+        rotate(core.intervals).every((coreInterval, index) => intervals[index] === coreInterval) ||
+        rotate(rotate(core.intervals)).every((coreInterval, index) => intervals[index] === coreInterval)
+    );
+    if (triadType === undefined)
+      throw new Error(`Invalid intervals: ${intervals}`);
+    return triadType;
+  }
+
+  public invert(): TriadCore {
+    return TriadCore.fromIntervals([this.intervals[0], this.intervals[2], this.intervals[1]]);
+  }
 }
 
-export const StackedMinor2 = new TriadCore([1, 1, 10]);
-export const Minor2PlusMajor2 = new TriadCore([1, 2, 9]);
-export const Major2PlusMinor2 = new TriadCore([1, 9, 2]);
-export const MinorMajor = new TriadCore([1, 3, 8]);
-export const MinorMajorI = new TriadCore([1, 8, 3]);
-export const Major7With5 = new TriadCore([1, 7, 4]);
-export const Major7With3 = new TriadCore([1, 4, 7]);
-export const Lydian = new TriadCore([1, 5, 6]);
-export const Phrygian = new TriadCore([1, 6, 5]);
-export const Major2Plus4 = new TriadCore([2, 2, 8]);
-export const Minor7With3 = new TriadCore([2, 3, 7]);
-export const Minor7With5 = new TriadCore([2, 7, 3]);
-export const Dominant = new TriadCore([2, 4, 6]);
-export const HalfDiminished = new TriadCore([2, 6, 4]);
-export const Stacked4s = new TriadCore([2, 5, 5]);
-export const Diminished = new TriadCore([3, 3, 6]);
-export const Minor = new TriadCore([3, 4, 5]);
-export const Major = new TriadCore([3, 5, 4]);
-export const Augmented = new TriadCore([4, 4, 4]);
+export const StackedMinor2 = new TriadCore([1, 1, 10], 'StackedMinor2');
+export const Minor2PlusMajor2 = new TriadCore([1, 2, 9], 'Minor2PlusMajor2');
+export const Major2PlusMinor2 = new TriadCore([1, 9, 2], 'Major2PlusMinor2');
+export const MinorMajor = new TriadCore([1, 3, 8], 'MinorMajor');
+export const MinorMajorI = new TriadCore([1, 8, 3], 'MinorMajorI');
+export const Major7With5 = new TriadCore([1, 7, 4], 'Major7With5');
+export const Major7With3 = new TriadCore([1, 4, 7], 'Major7With3');
+export const Lydian = new TriadCore([1, 5, 6], 'Lydian');
+export const Phrygian = new TriadCore([1, 6, 5], 'Phrygian');
+export const Major2Plus4 = new TriadCore([2, 2, 8], 'Major2Plus4');
+export const Minor7With3 = new TriadCore([2, 3, 7], 'Minor7With3');
+export const Minor7With5 = new TriadCore([2, 7, 3], 'Minor7With5');
+export const Dominant = new TriadCore([2, 4, 6], 'Dominant');
+export const HalfDiminished = new TriadCore([2, 6, 4], 'HalfDiminished');
+export const Stacked4s = new TriadCore([2, 5, 5], 'Stacked4s');
+export const Diminished = new TriadCore([3, 3, 6], 'Diminished');
+export const Minor = new TriadCore([3, 4, 5], 'Minor');
+export const Major = new TriadCore([3, 5, 4], 'Major');
+export const Augmented = new TriadCore([4, 4, 4], 'Augmented');
+
+export const AllTriadTypes = [StackedMinor2, Minor2PlusMajor2, Major2PlusMinor2, MinorMajor, MinorMajorI,
+  Major7With5, Major7With3, Lydian, Phrygian, Major2Plus4, Minor7With3, Minor7With5, Dominant, HalfDiminished,
+  Stacked4s, Diminished, Minor, Major, Augmented]

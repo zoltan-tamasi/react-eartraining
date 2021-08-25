@@ -10,14 +10,14 @@ import {
   NotOctaveExploded,
   Phrygian,
   OctaveExploded,
-  A, B, C, Asharp, Csharp, Dsharp, Gsharp, D
+  A, B, C, Asharp, Csharp, Dsharp, Gsharp, D, Major2PlusMinor2, Major7With3, Minor2PlusMajor2
 } from './TriadCore';
 
 test('NoteName test', () => {
 
-  expect(new Note(A, 1).successor().noteName).toEqual(B);
+  expect(new Note(A, 1).successor().noteName).toBe(Asharp);
 
-  expect(new Note(B, 1).successor().noteName).toEqual(C);
+  expect(new Note(B, 1).successor().noteName).toBe(C);
   expect(new Note(B, 1).successor().octave).toEqual(2);
 
   const chord1 = new Chord(Rotation0, StackedMinor2, new Note(A, 1), NotOctaveExploded);
@@ -39,8 +39,14 @@ test('NoteName test', () => {
   expect(chord3.notesOf()[1].octave).toEqual(3);
   expect(chord3.notesOf()[2].octave).toEqual(2);
 
-  expect(() => new TriadCore([1, 1, 1])).toThrow();
-  expect(() => new TriadCore([1, 1, 10])).not.toThrow();
+  expect(() => new TriadCore([1, 1, 1], '')).toThrow();
+  expect(() => new TriadCore([1, 1, 10], '')).not.toThrow();
 
+  expect(TriadCore.fromIntervals([1, 4, 7])).toBe(Major7With3);
+  expect(TriadCore.fromIntervals([4, 7, 1])).toBe(Major7With3);
+  expect(TriadCore.fromIntervals([7, 1, 4])).toBe(Major7With3);
+  expect(Minor2PlusMajor2.invert()).toBe(Major2PlusMinor2);
+  expect(Major7With5.invert()).toBe(Major7With3);
+  expect(StackedMinor2.invert()).toBe(StackedMinor2);
 
 });
