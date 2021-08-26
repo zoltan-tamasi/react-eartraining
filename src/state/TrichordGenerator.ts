@@ -15,7 +15,7 @@ import {
 } from "../core/TriadCore";
 import { Opaque } from "../core/Opaque";
 
-export type Lock<T> = Opaque<T, { locked: boolean }>;
+export type Lock<T> = Opaque<T, { locked: boolean, lockKind: LockKind }>;
 export type TriadCoreLock = Lock<'TriadCoreLock'>
 export type RotationLock = Lock<'RotationLock'>
 export type BaseNoteLock = Lock<'BaseNoteLock'>
@@ -41,7 +41,8 @@ export interface Effect {}
 export const NoEffect = {} as Effect
 
 export const switchLock = <T>(lock: Lock<T>): Lock<T> => ({
-  locked: !lock.locked
+  locked: !lock.locked,
+  lockKind: lock.lockKind
 }) as Lock<T>
 
 export const pullRandom = <T>(list: Array<T>): T => list[Math.round(Math.random() * (list.length - 1))]
@@ -65,17 +66,17 @@ export class TrichordGeneratorState {
     readonly octaveExplodeLock: OctaveExplodeLock,
     readonly audioEngineReady: Boolean
   ) {}
-  
+
   static getInitial() {
     return new TrichordGeneratorState(
       Rotation0,
       OctaveExploded,
       Phrygian,
       new Note(C, 3),
-      { locked: false } as TriadCoreLock,
-      { locked: false } as BaseNoteLock,
-      { locked: false } as RotationLock,
-      { locked: false } as OctaveExplodeLock,
+      { locked: false, lockKind: 'TriadCoreLock' } as TriadCoreLock,
+      { locked: false, lockKind: 'BaseNoteLock' } as BaseNoteLock,
+      { locked: false, lockKind: 'RotationLock' } as RotationLock,
+      { locked: false, lockKind: 'OctaveExplodeLock' } as OctaveExplodeLock,
       false
     )
   }
@@ -83,7 +84,7 @@ export class TrichordGeneratorState {
   static getChord(state: TrichordGeneratorState): Chord {
     return new Chord(state.rotation, state.triadCore, state.baseNote, state.octaveExplode);
   }
-    
+
   static handleAction (state: TrichordGeneratorState, action: Action): TrichordGeneratorState {
     switch (action.kind) {
       case 'Randomize':
@@ -110,10 +111,10 @@ export class TrichordGeneratorState {
           default:
             assertExhaustive(action.lockKind)
         }
+        break;
       default:
         assertExhaustive(action)
     }
   }
 }
-          
-          
+

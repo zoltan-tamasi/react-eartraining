@@ -20,7 +20,6 @@ export class Note {
   toString(): string {
     return `${this.noteName.toString()}${this.octave}`;
   }
-
 }
 
 export type NoteNameType = Opaque<'NoteNameType', object>
@@ -90,9 +89,9 @@ export const NoteName = {
 
 
 export type Rotation = Opaque<'Rotation', number>
-export const Rotation0 = {} as Rotation;
-export const Rotation1 = {} as Rotation;
-export const Rotation2 = {} as Rotation;
+export const Rotation0 = { toString() { return 'Rotation0'; } } as Rotation;
+export const Rotation1 = { toString() { return 'Rotation1'; } } as Rotation;
+export const Rotation2 = { toString() { return 'Rotation2'; }  } as Rotation;
 
 export type OctaveExplode = Opaque<'OctaveExplode', boolean>
 export const OctaveExploded = {} as OctaveExplode
@@ -121,14 +120,16 @@ export class Chord {
 
     const notes: Array<Note> =
       this.intervals().slice(0, 2)
-        .reduce(([head, ...rest], interval) => {
-          return [head.plus(interval), head, ...rest];
-        }, [this.baseNote])
+        .reduce(
+          ([head, ...rest], interval) =>
+            [head.plus(interval), head, ...rest],
+          [this.baseNote]
+        )
         .reverse();
 
     return (this.octaveExplode === OctaveExploded)
-        ? [notes[0], notes[1].plus(12), notes[2]]
-        : notes
+      ? [notes[0], notes[1].plus(12), notes[2]]
+      : notes
   }
 }
 
