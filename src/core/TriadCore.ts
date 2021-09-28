@@ -93,6 +93,11 @@ export const Rotation0 = { toString() { return 'Rotation0'; } } as Rotation;
 export const Rotation1 = { toString() { return 'Rotation1'; } } as Rotation;
 export const Rotation2 = { toString() { return 'Rotation2'; }  } as Rotation;
 
+export const rotationFromString = (rotation: string): Rotation =>
+  rotation === 'Rotation0' ? Rotation0 :
+  rotation === 'Rotation1' ? Rotation1 :
+  rotation === 'Rotation2' ? Rotation2 : (() => { throw new Error(`${rotation} is not a valid rotation`) })()
+
 export type OctaveExplode = Opaque<'OctaveExplode', boolean>
 export const OctaveExploded = {} as OctaveExplode
 export const NotOctaveExploded = {} as OctaveExplode;
