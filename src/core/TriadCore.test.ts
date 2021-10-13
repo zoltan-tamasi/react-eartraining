@@ -20,6 +20,15 @@ test('NoteName test', () => {
   expect(new Note(B, 1).successor().noteName).toBe(C);
   expect(new Note(B, 1).successor().octave).toEqual(2);
 
+  expect(Note.fromInt(0).noteName).toBe(C);
+  expect(Note.fromInt(0).octave).toBe(0);
+
+  expect(Note.fromInt(12).noteName).toBe(C);
+  expect(Note.fromInt(12).octave).toBe(1);
+
+  expect(Note.fromInt(13).noteName).toBe(Csharp);
+  expect(Note.fromInt(13).octave).toBe(1);
+
   const chord1 = new Chord(Rotation0, StackedMinor2, new Note(A, 1), NotOctaveExploded);
   expect(chord1.rotation).toBe(Rotation0);
   expect(chord1.intervals()).toEqual([1, 1, 10]);

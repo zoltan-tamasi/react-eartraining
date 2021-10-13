@@ -20,6 +20,14 @@ export class Note {
   toString(): string {
     return `${this.noteName.toString()}${this.octave}`;
   }
+
+  toInt(): number {
+    return this.octave * 12 + NoteName.toInt(this.noteName)
+  }
+
+  static fromInt(number: number) {
+    return new Note( NoteName.fromInt(number % 12), Math.floor(number / 12))
+  }
 }
 
 export type NoteNameType = Opaque<'NoteNameType', object>
@@ -39,6 +47,21 @@ export const B = { toString() { return 'B' } } as NoteNameType;
 
 
 export const NoteName = {
+
+  toInt(noteName: NoteNameType): number {
+    if (noteName === C) return 0;
+    if (noteName === Csharp) return 1;
+    if (noteName === D) return 2;
+    if (noteName === Dsharp) return 3;
+    if (noteName === E) return 4;
+    if (noteName === F) return 5;
+    if (noteName === Fsharp) return 6;
+    if (noteName === G) return 7;
+    if (noteName === Gsharp) return 8;
+    if (noteName === A) return 9;
+    if (noteName === Asharp) return 10;
+    return 11;
+  },
 
   fromInt(noteValue: number): NoteNameType {
     if (noteValue === 0) return C;
