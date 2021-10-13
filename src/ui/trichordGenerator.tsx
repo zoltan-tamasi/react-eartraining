@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction, useState } from 'react';
-import { Note, NoteName, Rotation, Rotation0, Rotation1, Rotation2, rotationFromString } from '../core/TriadCore';
+import { AllTriadTypes, Note, NoteName, Rotation, Rotation0, Rotation1, Rotation2, rotationFromString, TriadCore } from '../core/TriadCore';
 import { Action, TrichordGeneratorState } from '../state/TrichordGenerator';
 import { LockComponent } from './lock'
 
@@ -55,6 +55,16 @@ const TrichordGeneratorComponent = () => {
         {
           [Rotation0, Rotation1, Rotation2].map(rotation =>
             <option value={rotation} key={rotation.toString()} selected={generator.rotation === rotation}  >{rotation.toString()}</option>
+          )
+        }
+      </select>
+
+      <label htmlFor="triadcore-select">Triadcore:</label>
+      <select name="triadcores" id="triadcore-select"
+        onChange={(event: React.ChangeEvent<HTMLSelectElement>) => handler({ kind: 'ChangeTriadCore', triadCore: TriadCore.fromLabel(event.target.value) }) } >
+        {
+          AllTriadTypes.map(triadCore =>
+            <option value={triadCore.label} key={triadCore.label} selected={generator.triadCore.label === triadCore.label} >{triadCore.label}</option>
           )
         }
       </select>

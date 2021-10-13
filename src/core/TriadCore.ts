@@ -184,6 +184,12 @@ export class TriadCore {
     return triadType;
   }
 
+  public static fromLabel(label: string) {
+    const triadCore = AllTriadTypes.find(triadCore => triadCore.label == label);
+    if (!triadCore) throw new Error(`${label} is not a valid TriadCore`);
+    return triadCore;
+  }
+
   public invert(): TriadCore {
     return TriadCore.fromIntervals([this.intervals[0], this.intervals[2], this.intervals[1]]);
   }
