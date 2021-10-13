@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction, useState } from 'react';
-import { Rotation, Rotation0, Rotation1, Rotation2, rotationFromString } from '../core/TriadCore';
+import { Note, NoteName, Rotation, Rotation0, Rotation1, Rotation2, rotationFromString } from '../core/TriadCore';
 import { Action, TrichordGeneratorState } from '../state/TrichordGenerator';
 import { LockComponent } from './lock'
 
@@ -54,12 +54,23 @@ const TrichordGeneratorComponent = () => {
       <select name="rotations" id="rotation-select" onChange={(event: React.ChangeEvent<HTMLSelectElement>) => handler({ kind: 'ChangeRotation', rotation: rotationFromString(event.target.value) }) } >
         {
           [Rotation0, Rotation1, Rotation2].map(rotation =>
-            <option value={rotation} key={rotation.toString()} >{rotation.toString()}</option>
+            <option value={rotation} key={rotation.toString()} selected={generator.rotation === rotation}  >{rotation.toString()}</option>
           )
         }
       </select>
 
       <LockComponent lock={generator.triadCoreLock} handler={handler} />
+
+      <input type="range" className="form-control-range" id="baseNoteSlider" min="24" max="60"
+        list="baseNoteMarks"
+        value={generator.baseNote.toInt()}
+        onChange={(event: React.ChangeEvent<HTMLInputElement>) => handler({ kind: 'ChangeBaseNote', baseNote: Note.fromInt(parseInt(event.target.value))  }) } />
+      <datalist id="baseNoteMarks">
+        <option value="24" label="C 2"/>
+        <option value="36" label="C 3"/>
+        <option value="48" label="C 4"/>
+        <option value="60" label="C 5"/>
+      </datalist>
     </div>
   );
 }

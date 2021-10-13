@@ -21,16 +21,23 @@ export type RotationLock = Lock<'RotationLock'>
 export type BaseNoteLock = Lock<'BaseNoteLock'>
 export type OctaveExplodeLock = Lock<'OctaveExplodeLock'>
 
-export type Action = Randomize | ChangeRotation | SwitchLock
+export type Action = Randomize | ChangeRotation | SwitchLock | ChangeBaseNote
 export type LockKind = 'TriadCoreLock' | 'RotationLock' | 'BaseNoteLock' | 'OctaveExplodeLock'
 
 export interface Randomize {
   kind: 'Randomize'
 }
+
 export interface ChangeRotation {
   kind: 'ChangeRotation'
   rotation: Rotation
 }
+
+export interface ChangeBaseNote {
+  kind: 'ChangeBaseNote'
+  baseNote: Note
+}
+
 export interface SwitchLock {
   kind: 'SwitchLock'
   lockKind: LockKind
@@ -111,6 +118,8 @@ export class TrichordGeneratorState {
           default:
             assertExhaustive(action.lockKind)
         }
+      case 'ChangeBaseNote':
+        return Object.assign({}, state, { baseNote: action.baseNote });
         break;
       default:
         assertExhaustive(action)
