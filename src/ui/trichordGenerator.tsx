@@ -1,89 +1,157 @@
-import React, { Dispatch, SetStateAction, useState } from 'react';
-import { AllTriadTypes, Note, NoteName, Rotation, Rotation0, Rotation1, Rotation2, rotationFromString, TriadCore } from '../core/TriadCore';
-import { Action, TrichordGeneratorState } from '../state/TrichordGenerator';
-import { LockComponent } from './lock'
+import React, { Dispatch, SetStateAction, useState } from "react";
+import {
+  AllTriadTypes,
+  Note,
+  NotOctaveExploded,
+  OctaveExploded,
+  octaveExplodedFromString,
+  Rotation0,
+  Rotation1,
+  Rotation2,
+  rotationFromString,
+  TriadCore,
+} from "../core/TriadCore";
+import { Action, TrichordGeneratorState } from "../state/TrichordGenerator";
+import { LockComponent } from "./lock";
 
-const useHandler = (generator: TrichordGeneratorState, setGenerator: Dispatch<SetStateAction<TrichordGeneratorState>>) =>
-  (action: Action) => setGenerator(TrichordGeneratorState.handleAction(generator, action))
+const useHandler =
+  (
+    generator: TrichordGeneratorState,
+    setGenerator: Dispatch<SetStateAction<TrichordGeneratorState>>
+  ) =>
+  (action: Action) =>
+    setGenerator(TrichordGeneratorState.handleAction(generator, action));
 
 const TrichordGeneratorComponent = () => {
   const [generator, setGenerator] = useState(
     TrichordGeneratorState.getInitial()
   );
 
-  const handler = useHandler(generator, setGenerator)
+  const handler = useHandler(generator, setGenerator);
 
   return (
     <div>
       <div>
-        Chord is: {TrichordGeneratorState.getChord(generator).notesOf().map((note) => `${note.noteName}${note.octave}`).join('\n')}
+        Chord is:{" "}
+        {TrichordGeneratorState.getChord(generator)
+          .notesOf()
+          .map((note) => `${note.noteName}${note.octave}`)
+          .join("\n")}
       </div>
       <div>
-        Intervals is: {TrichordGeneratorState.getChord(generator).intervals().map((note) => `${note}`).join(',')}
+        Intervals is:{" "}
+        {TrichordGeneratorState.getChord(generator)
+          .intervals()
+          .map((note) => `${note}`)
+          .join(",")}
       </div>
       <div>
-        Basenote is: {generator.baseNote.toString()}
+        Basenote {generator.baseNote.toString()}
+        <input
+          type="range"
+          className="form-control-range"
+          id="baseNoteSlider"
+          min="24"
+          max="60"
+          list="baseNoteMarks"
+          value={generator.baseNote.toInt()}
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+            handler({
+              kind: "ChangeBaseNote",
+              baseNote: Note.fromInt(parseInt(event.target.value)),
+            })
+          }
+        />
+        <datalist id="baseNoteMarks">
+          <option value="24" label="C 2" />
+          <option value="36" label="C 3" />
+          <option value="48" label="C 4" />
+          <option value="60" label="C 5" />
+        </datalist>
+        <LockComponent lock={generator.baseNoteLock} handler={handler} />
       </div>
       <div>
-        Rotation is: {generator.rotation.toString()}
+        <label htmlFor="rotation-select">Rotation </label>
+        <select
+          name="rotations"
+          id="rotation-select"
+          onChange={(event: React.ChangeEvent<HTMLSelectElement>) =>
+            handler({
+              kind: "ChangeRotation",
+              rotation: rotationFromString(event.target.value),
+            })
+          }
+        >
+          {[Rotation0, Rotation1, Rotation2].map((rotation) => (
+            <option
+              value={rotation}
+              key={rotation.toString()}
+              selected={generator.rotation === rotation}
+            >
+              {rotation.toString()}
+            </option>
+          ))}
+        </select>
+        <LockComponent lock={generator.rotationLock} handler={handler} />
       </div>
       <div>
-        Triadcore is: {generator.triadCore.label}
+        <label htmlFor="triadcore-select">Triadcore </label>
+        <select
+          name="triadcores"
+          id="triadcore-select"
+          onChange={(event: React.ChangeEvent<HTMLSelectElement>) =>
+            handler({
+              kind: "ChangeTriadCore",
+              triadCore: TriadCore.fromLabel(event.target.value),
+            })
+          }
+        >
+          {AllTriadTypes.map((triadCore) => (
+            <option
+              value={triadCore.label}
+              key={triadCore.label}
+              selected={generator.triadCore.label === triadCore.label}
+            >
+              {triadCore.label}
+            </option>
+          ))}
+        </select>
+        <LockComponent lock={generator.triadCoreLock} handler={handler} />
       </div>
       <div>
-        TriadCoreLock is: {generator.triadCoreLock.locked ? 'locked' : 'open'}
-      </div>
-      <div>
-        RotationLock is: {generator.rotationLock.locked ? 'locked' : 'open'}
-      </div>
-      <div>
-        BaseNoteLock is: {generator.baseNoteLock.locked ? 'locked' : 'open'}
-      </div>
-      <div>
-        OctaveExplodeLock is: {generator.octaveExplodeLock.locked ? 'locked' : 'open'}
+        <select
+          name="octave-exploded"
+          id="octave-exploded-select"
+          onChange={(event: React.ChangeEvent<HTMLSelectElement>) =>
+            handler({
+              kind: "ChangeOctaveExplode",
+              octaveExplode: octaveExplodedFromString(event.target.value),
+            })
+          }
+        >
+          <option
+            value={OctaveExploded}
+            key={OctaveExploded.toString()}
+            selected={generator.octaveExplode === OctaveExploded}
+          >
+            {OctaveExploded.toString()}
+          </option>
+          <option
+            value={NotOctaveExploded}
+            key={NotOctaveExploded.toString()}
+            selected={generator.octaveExplode === NotOctaveExploded}
+          >
+            {NotOctaveExploded.toString()}
+          </option>
+        </select>
+        <LockComponent lock={generator.octaveExplodeLock} handler={handler} />
       </div>
 
-      <button onClick={() => handler({ kind: 'Randomize' })} >Rand</button>
-      <button onClick={() => handler({ kind: 'SwitchLock', lockKind: 'TriadCoreLock' })} >TriadCoreLock</button>
-      <button onClick={() => handler({ kind: 'SwitchLock', lockKind: 'RotationLock' })} >RotationLock</button>
-      <button onClick={() => handler({ kind: 'SwitchLock', lockKind: 'BaseNoteLock' })} >BaseNoteLock</button>
-      <button onClick={() => handler({ kind: 'SwitchLock', lockKind: 'OctaveExplodeLock' })} >OctaveExplodeLock</button>
+      <button onClick={() => handler({ kind: "Randomize" })}>Rand</button>
       <br />
-
-      <label htmlFor="rotation-select">Rotation:</label>
-      <select name="rotations" id="rotation-select" onChange={(event: React.ChangeEvent<HTMLSelectElement>) => handler({ kind: 'ChangeRotation', rotation: rotationFromString(event.target.value) }) } >
-        {
-          [Rotation0, Rotation1, Rotation2].map(rotation =>
-            <option value={rotation} key={rotation.toString()} selected={generator.rotation === rotation}  >{rotation.toString()}</option>
-          )
-        }
-      </select>
-
-      <label htmlFor="triadcore-select">Triadcore:</label>
-      <select name="triadcores" id="triadcore-select"
-        onChange={(event: React.ChangeEvent<HTMLSelectElement>) => handler({ kind: 'ChangeTriadCore', triadCore: TriadCore.fromLabel(event.target.value) }) } >
-        {
-          AllTriadTypes.map(triadCore =>
-            <option value={triadCore.label} key={triadCore.label} selected={generator.triadCore.label === triadCore.label} >{triadCore.label}</option>
-          )
-        }
-      </select>
-
-      <LockComponent lock={generator.triadCoreLock} handler={handler} />
-
-      <input type="range" className="form-control-range" id="baseNoteSlider" min="24" max="60"
-        list="baseNoteMarks"
-        value={generator.baseNote.toInt()}
-        onChange={(event: React.ChangeEvent<HTMLInputElement>) => handler({ kind: 'ChangeBaseNote', baseNote: Note.fromInt(parseInt(event.target.value))  }) } />
-      <datalist id="baseNoteMarks">
-        <option value="24" label="C 2"/>
-        <option value="36" label="C 3"/>
-        <option value="48" label="C 4"/>
-        <option value="60" label="C 5"/>
-      </datalist>
     </div>
   );
-}
+};
 
 /*const TrichordGeneratorComponent2 = () => {
   const [generator, setGenerator] = useState(

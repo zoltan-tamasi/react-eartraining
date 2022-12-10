@@ -21,8 +21,8 @@ export type RotationLock = Lock<'RotationLock'>
 export type BaseNoteLock = Lock<'BaseNoteLock'>
 export type OctaveExplodeLock = Lock<'OctaveExplodeLock'>
 
-export type Action = Randomize | ChangeRotation | SwitchLock | ChangeBaseNote | ChangeTriadCore
-export type LockKind = 'TriadCoreLock' | 'RotationLock' | 'BaseNoteLock' | 'OctaveExplodeLock'
+export type Action = Randomize | ChangeRotation | SwitchLock | ChangeBaseNote | ChangeTriadCore | ChangeOctaveExplode;
+export type LockKind = 'TriadCoreLock' | 'RotationLock' | 'BaseNoteLock' | 'OctaveExplodeLock';
 
 export interface Randomize {
   kind: 'Randomize'
@@ -41,6 +41,11 @@ export interface ChangeBaseNote {
 export interface ChangeTriadCore {
   kind: 'ChangeTriadCore',
   triadCore: TriadCore
+}
+
+export interface ChangeOctaveExplode {
+  kind: 'ChangeOctaveExplode',
+  octaveExplode: OctaveExplode
 }
 
 export interface SwitchLock {
@@ -76,7 +81,7 @@ export class TrichordGeneratorState {
     readonly baseNoteLock: BaseNoteLock,
     readonly rotationLock: RotationLock,
     readonly octaveExplodeLock: OctaveExplodeLock,
-    readonly audioEngineReady: Boolean
+    readonly audioEngineReady: boolean
   ) {}
 
   static getInitial() {
@@ -121,15 +126,16 @@ export class TrichordGeneratorState {
           case 'BaseNoteLock':
             return Object.assign({}, state, { baseNoteLock: switchLock(state.baseNoteLock) });
           default:
-            assertExhaustive(action.lockKind)
+            return assertExhaustive(action.lockKind)
         }
       case 'ChangeBaseNote':
         return Object.assign({}, state, { baseNote: action.baseNote });
       case 'ChangeTriadCore':
         return Object.assign({}, state, { triadCore: action.triadCore });
-        break;
+      case 'ChangeOctaveExplode':
+        return Object.assign({}, state, { octaveExplode: action.octaveExplode });
       default:
-        assertExhaustive(action)
+        return assertExhaustive(action)
     }
   }
 }
