@@ -13,6 +13,7 @@ import {
 } from "../core/TriadCore";
 import { Action, TrichordGeneratorState } from "../state/TrichordGenerator";
 import { LockComponent } from "./lock";
+import { NoteWheel } from "./noteWheeel";
 
 const useHandler =
   (
@@ -149,6 +150,10 @@ const TrichordGeneratorComponent = () => {
 
       <button onClick={() => handler({ kind: "Randomize" })}>Rand</button>
       <br />
+
+      <hr />
+
+      <NoteWheel triadCore={generator.triadCore} baseNote={generator.baseNote} octaveExplode={generator.octaveExplode} rotation={generator.rotation}  />
     </div>
   );
 };

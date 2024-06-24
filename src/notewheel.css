@@ -1,0 +1,152 @@
+
+
+#progress {
+    margin: 100px auto;
+}
+
+#note-wheel {
+    position: relative;
+    padding: 60px;
+    width: 50%;
+}
+
+#chord-notes {
+    width: 50%;
+}
+
+#note-wheel img {
+    width: 200px;
+    height: 200px;
+}
+
+#note-wheel img.rotation-0 {
+    transform: rotate(0deg)
+}
+
+#note-wheel img.rotation-1 {
+    transform: rotate(-30deg)
+}
+
+#note-wheel img.rotation-2 {
+    transform: rotate(-60deg)
+}
+
+#note-wheel img.rotation-3 {
+    transform: rotate(-90deg)
+}
+
+#note-wheel img.rotation-4 {
+    transform: rotate(-120deg)
+}
+
+#note-wheel img.rotation-5 {
+    transform: rotate(-150deg)
+}
+
+#note-wheel img.rotation-6 {
+    transform: rotate(-180deg)
+}
+
+#note-wheel img.rotation-7 {
+    transform: rotate(-210deg)
+}
+
+#note-wheel img.rotation-8 {
+    transform: rotate(-240deg)
+}
+
+#note-wheel img.rotation-9 {
+    transform: rotate(-270deg)
+}
+
+#note-wheel img.rotation-10 {
+    transform: rotate(-300deg)
+}
+
+#note-wheel img.rotation-11 {
+    transform: rotate(-330deg)
+}
+
+#guess-chord img {
+    width: 80px;
+    height: 80px;
+}
+
+#guess-chord button {
+    width: 280px;
+}
+
+#guess-chord button.either {
+    width: initial;
+}
+
+
+.note-label {
+  color: #b6b4b4;
+  position: absolute;
+}
+
+.note-label.selected {
+  font-size: 2rem;
+  color: #000;
+}
+
+.note-label.pos-0 {
+    top: 0px;
+    left: 150px;
+}
+
+.note-label.pos-1 {
+    top: 25px;
+    left: 210px;
+}
+
+.note-label.pos-2 {
+    top: 65px;
+    left: 260px;
+}
+
+.note-label.pos-3 {
+    top: 140px;
+    left: 270px;
+}
+
+.note-label.pos-4 {
+    top: 205px;
+    left: 260px;
+}
+
+.note-label.pos-5 {
+    top: 260px;
+    left: 210px;
+}
+
+.note-label.pos-6 {
+    top: 280px;
+    left: 150px;
+}
+
+.note-label.pos-7 {
+    top: 260px;
+    left: 90px;
+}
+
+.note-label.pos-8 {
+    top: 205px;
+    left: 25px;
+}
+
+.note-label.pos-9 {
+    top: 140px;
+    left: 20px;
+}
+
+.note-label.pos-10 {
+    top: 65px;
+    left: 30px;
+}
+
+.note-label.pos-11 {
+    top: 25px;
+    left: 90px;
+}
