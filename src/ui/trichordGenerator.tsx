@@ -70,6 +70,7 @@ const TrichordGeneratorComponent = () => {
       <div>
         <label htmlFor="rotation-select">Rotation </label>
         <select
+          defaultValue={generator.rotation}
           name="rotations"
           id="rotation-select"
           onChange={(event: React.ChangeEvent<HTMLSelectElement>) =>
@@ -94,6 +95,7 @@ const TrichordGeneratorComponent = () => {
       <div>
         <label htmlFor="triadcore-select">Triadcore </label>
         <select
+          defaultValue={generator.triadCore.label}
           name="triadcores"
           id="triadcore-select"
           onChange={(event: React.ChangeEvent<HTMLSelectElement>) =>
@@ -117,6 +119,7 @@ const TrichordGeneratorComponent = () => {
       </div>
       <div>
         <select
+          defaultValue={generator.octaveExplode}
           name="octave-exploded"
           id="octave-exploded-select"
           onChange={(event: React.ChangeEvent<HTMLSelectElement>) =>
