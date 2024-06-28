@@ -1,4 +1,4 @@
-import { Note, OctaveExplode, Rotation, TriadCore } from "../core/TriadCore"
+import { Chord, Note, NoteName, NoteNameType, OctaveExplode, Rotation, TriadCore } from "../core/TriadCore"
 
 const getImage = (triadCore: TriadCore): string => {
   
@@ -28,6 +28,24 @@ const getImage = (triadCore: TriadCore): string => {
   
 }
 
+const getNoteWheel = (triadCore: TriadCore, rotation: Rotation, octaveExplode: OctaveExplode, baseNote: Note): [NoteNameType, number, boolean][] => {
+
+  const chord = new Chord(rotation, triadCore, baseNote, octaveExplode);
+  const noteList = [baseNote];
+  
+  Array.from({ length: 11 }, () => {
+    noteList.push(noteList[noteList.length - 1].successor());
+  });
+  
+  return noteList.map((note, position) => {
+    if (chord.notesOf().map(note => note.noteName).includes(note.noteName)) {
+      return [note.noteName, position, true];
+    } else {
+      return [note.noteName, position, false];
+    }
+  })
+}
+
 const getImageAndRotation = (triadCore: TriadCore, rotation: Rotation): [string, string] => {
   const imageRotation = 
   {
@@ -48,9 +66,14 @@ export const NoteWheel = function<T>(props: {
   const [image, rotation] = getImageAndRotation(props.triadCore, props.rotation);
   return (
     <div id="note-wheel">
-    { props.triadCore.label }
-    {  }
-    <img src={image} className={rotation}></img>
+
+      {getNoteWheel(props.triadCore, props.rotation, props.octaveExplode, props.baseNote).map(([noteName, position, selected]) => (
+        <span className={`note-label pos-${position} ${selected ? "selected" : ""}`} >
+          {noteName.toString()}
+        </span>
+      ))}
+
+      <img src={image} className={rotation}></img>
     </div>
   )
 }
