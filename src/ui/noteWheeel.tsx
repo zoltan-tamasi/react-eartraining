@@ -32,8 +32,8 @@ const getImageAndRotation = (triadCore: TriadCore, rotation: Rotation): [string,
   const imageRotation = 
   {
     "Rotation0":  0,
-    "Rotation1": triadCore.intervals[1],
-    "Rotation2": (triadCore.intervals[1] + triadCore.intervals[2])
+    "Rotation1": triadCore.intervals[0],
+    "Rotation2": (triadCore.intervals[0] + triadCore.intervals[1])
   }[rotation.toString()];
   
   return [getImage(triadCore), `rotation-${imageRotation}`]

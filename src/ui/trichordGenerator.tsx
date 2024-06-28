@@ -15,11 +15,7 @@ import { Action, TrichordGeneratorState } from "../state/TrichordGenerator";
 import { LockComponent } from "./lock";
 import { NoteWheel } from "./noteWheeel";
 
-const useHandler =
-  (
-    generator: TrichordGeneratorState,
-    setGenerator: Dispatch<SetStateAction<TrichordGeneratorState>>
-  ) =>
+const useHandler = (generator: TrichordGeneratorState, setGenerator: Dispatch<SetStateAction<TrichordGeneratorState>>) =>
   (action: Action) =>
     setGenerator(TrichordGeneratorState.handleAction(generator, action));
 
