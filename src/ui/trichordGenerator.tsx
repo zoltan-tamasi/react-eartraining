@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { useReducer } from "react";
 import {
   AllTriadTypes,
   Note,
@@ -11,20 +11,13 @@ import {
   rotationFromString,
   TriadCore,
 } from "../core/TriadCore";
-import { Action, TrichordGeneratorState } from "../state/TrichordGenerator";
+import { TrichordGeneratorState } from "../state/TrichordGenerator";
 import { LockComponent } from "./lock";
 import { NoteWheel } from "./noteWheeel";
 
-const useHandler = (generator: TrichordGeneratorState, setGenerator: Dispatch<SetStateAction<TrichordGeneratorState>>) =>
-  (action: Action) =>
-    setGenerator(TrichordGeneratorState.handleAction(generator, action));
-
 const TrichordGeneratorComponent = () => {
-  const [generator, setGenerator] = useState(
-    TrichordGeneratorState.getInitial()
-  );
 
-  const handler = useHandler(generator, setGenerator);
+  const [generator, dispatch] = useReducer(TrichordGeneratorState.handleAction, TrichordGeneratorState.getInitial());
 
   return (
     <div>
@@ -53,7 +46,7 @@ const TrichordGeneratorComponent = () => {
           list="baseNoteMarks"
           value={generator.baseNote.toInt()}
           onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-            handler({
+            dispatch({
               kind: "ChangeBaseNote",
               baseNote: Note.fromInt(parseInt(event.target.value)),
             })
@@ -65,7 +58,7 @@ const TrichordGeneratorComponent = () => {
           <option value="48" label="C 4" />
           <option value="60" label="C 5" />
         </datalist>
-        <LockComponent lock={generator.baseNoteLock} handler={handler} />
+        <LockComponent lock={generator.baseNoteLock} dispatch={dispatch} />
       </div>
       <div>
         <label htmlFor="rotation-select">Rotation </label>
@@ -74,7 +67,7 @@ const TrichordGeneratorComponent = () => {
           name="rotations"
           id="rotation-select"
           onChange={(event: React.ChangeEvent<HTMLSelectElement>) =>
-            handler({
+            dispatch({
               kind: "ChangeRotation",
               rotation: rotationFromString(event.target.value),
             })
@@ -90,7 +83,7 @@ const TrichordGeneratorComponent = () => {
             </option>
           ))}
         </select>
-        <LockComponent lock={generator.rotationLock} handler={handler} />
+        <LockComponent lock={generator.rotationLock} dispatch={dispatch} />
       </div>
       <div>
         <label htmlFor="triadcore-select">Triadcore </label>
@@ -99,7 +92,7 @@ const TrichordGeneratorComponent = () => {
           name="triadcores"
           id="triadcore-select"
           onChange={(event: React.ChangeEvent<HTMLSelectElement>) =>
-            handler({
+            dispatch({
               kind: "ChangeTriadCore",
               triadCore: TriadCore.fromLabel(event.target.value),
             })
@@ -115,7 +108,7 @@ const TrichordGeneratorComponent = () => {
             </option>
           ))}
         </select>
-        <LockComponent lock={generator.triadCoreLock} handler={handler} />
+        <LockComponent lock={generator.triadCoreLock} dispatch={dispatch} />
       </div>
       <div>
         <select
@@ -123,7 +116,7 @@ const TrichordGeneratorComponent = () => {
           name="octave-exploded"
           id="octave-exploded-select"
           onChange={(event: React.ChangeEvent<HTMLSelectElement>) =>
-            handler({
+            dispatch({
               kind: "ChangeOctaveExplode",
               octaveExplode: octaveExplodedFromString(event.target.value),
             })
@@ -144,10 +137,10 @@ const TrichordGeneratorComponent = () => {
             {NotOctaveExploded.toString()}
           </option>
         </select>
-        <LockComponent lock={generator.octaveExplodeLock} handler={handler} />
+        <LockComponent lock={generator.octaveExplodeLock} dispatch={dispatch} />
       </div>
 
-      <button onClick={() => handler({ kind: "Randomize" })}>Rand</button>
+      <button onClick={() => dispatch({ kind: "Randomize" })}>Rand</button>
       <br />
 
       <hr />
